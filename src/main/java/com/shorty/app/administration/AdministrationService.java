@@ -1,4 +1,4 @@
-package com.shorty.app;
+package com.shorty.app.administration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.shorty.project.help.NameOfServer;
-import com.shorty.project.help.RandomString;
+import com.shorty.app.url.UrlLink;
+import com.shorty.app.url.UrlRepository;
+import com.shorty.app.utilis.NameOfServer;
+import com.shorty.app.utilis.RandomString;
 
 @Service
 public class AdministrationService {

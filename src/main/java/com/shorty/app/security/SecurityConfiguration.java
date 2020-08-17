@@ -1,4 +1,4 @@
-package com.shorty.app;
+package com.shorty.app.security;
 
 import javax.sql.DataSource;
 

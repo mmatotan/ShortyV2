@@ -1,4 +1,4 @@
-package com.shorty.app;
+package com.shorty.app.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

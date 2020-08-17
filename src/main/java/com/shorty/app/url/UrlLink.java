@@ -1,4 +1,4 @@
-package com.shorty.app;
+package com.shorty.app.url;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

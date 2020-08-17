@@ -1,9 +1,10 @@
-package com.shorty.app;
+package com.shorty.app.url;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shorty.project.help.NameOfServer;
+import com.shorty.app.administration.AccountRepository;
+import com.shorty.app.utilis.NameOfServer;
 
 @Service
 public class UrlService {

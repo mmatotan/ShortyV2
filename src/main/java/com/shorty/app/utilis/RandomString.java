@@ -1,4 +1,4 @@
-package com.shorty.project.help;
+package com.shorty.app.utilis;
 
 import java.util.Random;
 

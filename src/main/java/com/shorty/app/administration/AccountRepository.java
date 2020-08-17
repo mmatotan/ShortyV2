@@ -1,4 +1,4 @@
-package com.shorty.app;
+package com.shorty.app.administration;
 
 import org.springframework.data.repository.CrudRepository;
 

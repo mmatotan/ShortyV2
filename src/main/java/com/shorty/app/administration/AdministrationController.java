@@ -1,4 +1,4 @@
-package com.shorty.app;
+package com.shorty.app.administration;
 
 
 import java.util.ArrayList;
@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shorty.app.url.UrlLink;
+
 @RestController
 public class AdministrationController {
 	
@@ -18,7 +20,7 @@ public class AdministrationController {
 	@PostMapping("/administration/register")
 	private String registerAccount(@RequestBody Account account) {
 		String reply = administrationService.registerAccount(account);
-		return reply;		
+		return reply;
 	}
 
 	@PostMapping("/administration/short")
