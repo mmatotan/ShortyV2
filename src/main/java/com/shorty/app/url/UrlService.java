@@ -1,6 +1,7 @@
 package com.shorty.app.url;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.shorty.app.administration.AccountRepository;
@@ -15,9 +16,12 @@ public class UrlService {
 	@Autowired
 	AccountRepository accountRepository;
 	
+	@Autowired
+	Environment environment;
+	
 	public UrlLink getOriginalUrl(String shortPart) {
 		//Extends the short suffix to the full address
-		String fullShortPart = 	"http://" + NameOfServer.nameOfServer + ":8080/" + shortPart;
+		String fullShortPart = 	"http://" + NameOfServer.nameOfServer + ":" + environment.getProperty("server.port") + "/" + shortPart;
 		
 		//Find the saved UrlLink
 		UrlLink urlLink = urlRepository.findByShortUrl(fullShortPart);

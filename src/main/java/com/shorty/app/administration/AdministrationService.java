@@ -1,9 +1,11 @@
 package com.shorty.app.administration;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +15,9 @@ import com.shorty.app.url.UrlLink;
 import com.shorty.app.url.UrlRepository;
 import com.shorty.app.utilis.NameOfServer;
 import com.shorty.app.utilis.RandomString;
+import com.shorty.app.utilis.registration.FailedRegistrationResponse;
+import com.shorty.app.utilis.registration.SuccessfulRegistrationResponse;
+import com.shorty.app.utilis.shorting.ShortUrl;
 
 @Service
 public class AdministrationService {
@@ -25,10 +30,13 @@ public class AdministrationService {
 
 	private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(10);
 	
-	public String registerAccount(Account account) {
+	@SuppressWarnings("unchecked")
+	public <T> T registerAccount(Account account) {
+		
 		//If the username already exists
-		if(accountRepository.findByUsername(account.getUsername()) != null) {
-			return "{ success : false, description : 'Account ID already exists!' }"; 
+		if(accountRepository.findByAccountID(account.getAccountID()) != null) {
+			FailedRegistrationResponse response = new FailedRegistrationResponse(false);
+			return (T) response;
 		}
 		
 		//Generates the password, only later encodes it so we can respond to the user with their password
@@ -43,47 +51,43 @@ public class AdministrationService {
 		
 		accountRepository.save(account);
 		
-		return "{ success : true, password : '" + returnedPassword + "' }";
+		return (T) new SuccessfulRegistrationResponse(true, returnedPassword);
 	}
 	
+	@Autowired
+	Environment environment;
 	
-	public String linkUrls(UrlLink urlLink) {
+	public ShortUrl linkUrls(UrlLink urlLink) {
 		//Gets the currently authenticated users information so we can extract its username
-		//In case user already shortened the url
-		if(urlRepository.findByUrl(urlLink.getUrl()) != null) {
-			return "{\n\tdescription : 'Url already shortened by the user!',"
-					+ "\n\tshortUrl : '" + urlRepository.findByUrl(urlLink.getUrl()).getShortUrl() + "'\n}";
-		}
-		
 		UserDetails authenticatedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		urlLink.setUsername(authenticatedUser.getUsername());
 		urlLink.setVisitCounter(0);
 		if(urlLink.getRedirectType() == 0) {
-			urlLink.setRedirectType(301);
+			urlLink.setRedirectType(302);
 		}
 		
-		urlLink.setShortUrl("http://" + NameOfServer.nameOfServer + ":8080/" + RandomString.randomUrl());
-		while(urlRepository.findByShortUrl(urlLink.getShortUrl()) != null) {
-			urlLink.setShortUrl("http://" + NameOfServer.nameOfServer + ":8080/" + RandomString.randomUrl());
-		}
+		do {
+			urlLink.setShortUrl("http://" + NameOfServer.nameOfServer + ":" + environment.getProperty("server.port") + "/" + RandomString.randomUrl());
+		} while(urlRepository.findByShortUrl(urlLink.getShortUrl()) != null);
 		
 		urlRepository.save(urlLink);
 		
-		return "{ shortUrl : '" + urlLink.getShortUrl() + "' }"; 
+		ShortUrl shortUrl = new ShortUrl(urlLink.getShortUrl());
+		return shortUrl;
 	}
 	
-	public List<String> getStats(){
+	public Map<String, Integer> getStats(){
 		UserDetails authenticatedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		//Create a list out of needed information for authenticated user
-		List<String> ownedUrls = new ArrayList<String>();
 		List<UrlLink> ownedObjectUrls = urlRepository.findByUsername(authenticatedUser.getUsername());
+		Map<String, Integer> map = new HashMap<String, Integer>();
 		
 		for(UrlLink temp : ownedObjectUrls) {
-			ownedUrls.add("'" + temp.getUrl() + "'" + " : " + temp.getVisitCounter());
+			map.put(temp.getUrl(), temp.getVisitCounter());
 		}
 		
-		return ownedUrls;
+		return map;
 	}
 }
