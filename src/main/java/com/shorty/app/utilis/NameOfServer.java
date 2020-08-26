@@ -1,6 +1,13 @@
 package com.shorty.app.utilis;
 
 public class NameOfServer {
-	//Change this variable to your public IP in order to host on the Internet
-	public static String nameOfServer = "localhost";
+	public static String nameOfServer;
+	
+	public static String getNameOfServer() {
+		return nameOfServer;
+	}
+	public static void setNameOfServer(String nameOfServer) {
+		NameOfServer.nameOfServer = nameOfServer;
+	}
+	
 }

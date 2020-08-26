@@ -43,8 +43,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		//Tells Spring Security where to look for authentication needed for users
 		//Also specifies the password encoder to use
 		auth.jdbcAuthentication().dataSource(dataSource).
-			usersByUsernameQuery("select username, password, enabled " + "from account " + "where username = ?").
-			authoritiesByUsernameQuery("select username, authority " + "from account " + "where username = ?").
+			usersByUsernameQuery("select accountid, password, enabled " + "from account " + "where accountid = ?").
+			authoritiesByUsernameQuery("select accountid, authority " + "from account " + "where accountid = ?").
 			passwordEncoder(passwordEncoder);
 	}
 	

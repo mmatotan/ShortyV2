@@ -1,0 +1,1 @@
+INSERT INTO account (accountID, password, enabled, authority) VALUES ('admin', '$2a$10$074sTo5bfmFSZoJLMh4WsudlvYaOTVXEx6J9TSsOu.jhCITLUNRC.', 'true', 'ROLE_USER');
